@@ -1,0 +1,51 @@
+# Author: Denis Krišťák (INUITS)
+
+easyblock = 'Tarball'
+
+name = 'Spark'
+version = '3.5.5'
+versionsuffix = '-Java-%(javaver)s'
+homepage = 'https://spark.apache.org'
+description = """Spark is Hadoop MapReduce done in memory"""
+
+toolchain = {'name': 'foss', 'version': '2024a'}
+
+source_urls = [
+    'https://archive.apache.org/dist//%(namelower)s/%(namelower)s-%(version)s/',
+    'https://downloads.apache.org/%(namelower)s/%(namelower)s-%(version)s/'
+]
+sources = ['%(namelower)s-%(version)s-bin-hadoop3.tgz']
+checksums = ['8daa3f7fb0af2670fe11beb8a2ac79d908a534d7298353ec4746025b102d5e31']
+
+dependencies = [
+    ('Python', '3.12.3'),
+    ('Arrow', '17.0.0'),
+    ('Java', '17', '', SYSTEM),
+]
+
+exts_defaultclass = 'PythonPackage'
+exts_default_options = {
+    'source_urls': [PYPI_SOURCE],
+}
+
+exts_list = [
+    ('py4j', '0.10.9.9', {
+        'checksums': ['f694cad19efa5bd1dee4f3e5270eb406613c974394035e5bfc4ec1aba870b879'],
+    }),
+]
+
+sanity_check_paths = {
+    'files': ['bin/pyspark', 'bin/spark-shell'],
+    'dirs': ['python']
+}
+
+sanity_check_commands = [
+    "pyspark -h",
+    "python -c 'import pyspark'",
+]
+
+modextrapaths = {'PYTHONPATH': 'python'}
+
+modextravars = {'SPARK_HOME': '%(installdir)s'}
+
+moduleclass = 'devel'
